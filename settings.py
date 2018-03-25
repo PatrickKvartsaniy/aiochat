@@ -8,10 +8,10 @@ BASE_DIR = os.path.dirname(__file__)
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
-def setupConfig(app):
+def setupConfig():
     try:
         with open("config.json", 'r') as c:
-            app.config = json.load(c)
+            return json.load(c)
     except Exception as e:
         print(f"Setup config error: {e}")
 
@@ -25,8 +25,6 @@ def setupJinja(app):
 
 def setupStatic(app):
     try:
-        app.router.add_static("/static/",
-                          path=STATIC_DIR,
-                          name="static")
+        app.router.add_static("/static", STATIC_DIR, name="static")
     except Exception as e:
         print(f"Setup static error: {e}")

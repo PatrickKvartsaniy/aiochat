@@ -1,8 +1,12 @@
-from views import View, ws_handler
+from views.chat import Chat
+from views.websocket import WebSocket
+from views.auth import Login, SignIn
 
 routes = [
-    ('GET', '/', View.index, 'main'),
-    ('GET', '/ws', ws_handler, 'websocket')
+    ('GET', '/',      Chat,      'chat'),
+    ('GET', '/ws',    WebSocket, 'websocket'),
+    ('*',   '/login', Login,     'login'),
+    ('*',   '/signin',SignIn,    'signin')
 ]
 
 def setupRoutes(app):
