@@ -1,9 +1,15 @@
+import base64
+import asyncio
+from cryptography import fernet
+
 from aiohttp import web
+from aiohttp_session import setup
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
+
 from settings import setupConfig, setupJinja, setupStatic
 from routes import setupRoutes
 from models import init_pg, close_pg
 
-import asyncio
 
 loop = asyncio.get_event_loop()
 
@@ -26,6 +32,12 @@ async def init():
     
     #PostgreSQL init
     app.db = await init_pg(app)
+
+    #Setup middleware
+    fernet_key = fernet.Fernet.generate_key()
+    secret_key = base64.urlsafe_b64decode(fernet_key)
+
+    setup(app, EncryptedCookieStorage(secret_key))
 
     return app
 

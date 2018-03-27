@@ -1,12 +1,12 @@
-from views.chat import Chat
-from views.websocket import WebSocket
-from views.auth import Login, SignIn
+from chat.views import Chat, WebSocket
+from auth.views import Login, SignIn, Logout
 
 routes = [
-    ('GET', '/',      Chat,      'chat'),
-    ('GET', '/ws',    WebSocket, 'websocket'),
-    ('*',   '/login', Login,     'login'),
-    ('*',   '/signin',SignIn,    'signin')
+    ('GET', '/',        Chat,     'chat'),
+    ('GET', '/ws',      WebSocket,'websocket'),
+    ('*',   '/login',   Login,    'login'),
+    ('*',   '/signin',  SignIn,   'signin'),
+    ('GET', '/logout',  Logout,   'logout'),
 ]
 
 def setupRoutes(app):

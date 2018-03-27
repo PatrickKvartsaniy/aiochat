@@ -17,7 +17,7 @@ function signIn(){
                     "password": password
                 }
             )
-        }).then(data  => console.log('Request succes: ', data)
+        }).then(data  => window.location.replace('/')
         ).catch(error => console.log('Reqest failuer: ', error)
     )}
     else{
