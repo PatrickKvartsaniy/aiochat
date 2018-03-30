@@ -4,12 +4,15 @@ import aiohttp_jinja2
 from aiohttp import web
 
 from models import User
+from tools import redirect, set_redis
 
 class Chat(web.View):
     
     @aiohttp_jinja2.template('chat.html')
     async def get(self):
-        pass
+        redis = self.request.app['redis']
+        if not await redis.get('user'):
+            redirect(self.request, 'login')
 
 class WebSocket(web.View):
 

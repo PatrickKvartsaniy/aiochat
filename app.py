@@ -10,13 +10,10 @@ from aiohttp_session.redis_storage import RedisStorage
 
 from settings import setupConfig, setupJinja, setupStatic
 from routes import setupRoutes
-from models import init_pg, close_pg
+from tools import init_pg, close_pg, close_redis
 
 
 loop = asyncio.get_event_loop()
-
-async def close_redis(app):
-        app['redis'].close()
 
 async def init():
     #App init

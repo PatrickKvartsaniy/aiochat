@@ -1,25 +1,17 @@
-from time import time
-
 import aiohttp
 import aiohttp_jinja2
 from aiohttp import web
 
+from tools import redirect, set_redis
 from models import User
-
-
-async def redirect(request, router_name):
-    url = request.app.router[router_name].url_for()
-    return web.HTTPFound(url)
-
-
-async def set_redis(redis,user,request):
-    await redis.set('user',str(user))
-    await redis.set('last_visit',time())
-    await redirect(request, 'chat')
 
 class Login(web.View):
     @aiohttp_jinja2.template('login.html')
     async def get(self):
+        redis = self.request.app['redis']
+        print(await redis.get('user'))
+        if await redis.get('user'):
+            await redirect(self.request, 'chat')
         return {'content':'Please login'}
 
     async def post(self):
@@ -32,9 +24,11 @@ class Login(web.View):
             return web.Response(content_type='application/json', text=str(result))
 
 class SignIn(web.View):
-
     @aiohttp_jinja2.template('signin.html')
     async def get(self):
+        redis = self.request.app['redis']
+        if await redis.get('user'):
+            await redirect(self.request, 'chat')
         return {'content':'Please enter your data'}
 
     async def post(self):
@@ -51,10 +45,8 @@ class SignIn(web.View):
 class Logout(web.View):
 
     async def get(self):
-        # session = await get_session(self.request)
-        # if session.get('user'):
-        #     del session['user']
-        #     redirect(self.request, 'login')
-        # else:
-        #     raise web.HTTPForbidden(body=b'Forbidden')
-        pass
+        redis = self.request.app['redis']
+        if await redis.get('user'):
+            await redis.delete('user')
+            await redirect(self.request, 'login')
+        return web.Response(content_type="application/json", text="Logged out")
