@@ -14,9 +14,14 @@ function login(){
                     "password": password
                 }
             )
-        }).then(data  => window.location.replace('/')
-        // }).then(data => console.log(data)
-        ).catch(error => console.log('Reqest failuer: ', error)
+        }).then(function(response){
+            if(response.ok){
+                return response.json()
+            }
+        }).then(function(data){
+            console.log(data)
+            window.location.href = '/'
+        }).catch(error => console.log('Reqest failuer: ', error)
     )}
     else{
         alert("Fill all the fields first!")

@@ -24,15 +24,15 @@ users = sa.Table('users',metadata,
                  sa.Column('password', sa.VARCHAR(100)))
 
 async def close_pg(app):
-    app['db'].close()
-    await app['db'].wait_closed()
+    app.db.close()
+    await app.db.wait_closed()
 
 class User():
     def __init__(self,app,id="",nickname="",email="",password=""):
-        self.id       = id
-        self.app      = app
+        self.id = id
+        self.app = app
         self.nickname = nickname
-        self.email    = email
+        self.email = email
         self.password = password
 
     async def create_user(self):
@@ -40,11 +40,10 @@ class User():
         if not user:
             async with self.app.db.acquire() as conn:
                 result = await conn.execute(users.insert().values(nickname = self.nickname,
-                                                                  email    = self.email,
+                                                                  email = self.email,
                                                                   password = self.password))
         else:
             result = "User exist"
-        
         return result
             
 

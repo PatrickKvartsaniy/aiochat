@@ -2,7 +2,6 @@ import aiohttp
 import aiohttp_jinja2
 
 from aiohttp import web
-from aiohttp_session import get_session
 
 from models import User
 
@@ -16,13 +15,13 @@ class WebSocket(web.View):
 
     async def get(self):
         app = self.request.app
-
+        redis = app['redis']
+        
         ws = web.WebSocketResponse()
         await ws.prepare(self.request)
 
-        session = await get_session(self.request)
-        print(session)
-        user  = User(app,id=session.get('user'))
+        user_id = int(await redis.get('user'))
+        user  = User(app,id=user_id)
         login = await user.get_login()
         print(login)
 
