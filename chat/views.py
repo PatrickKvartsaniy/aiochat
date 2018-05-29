@@ -28,9 +28,8 @@ class WebSocket(web.View):
         login = await user.get_login()
         print(login)
 
-        for ws in app['wslist']:
-            await ws.send_str(f'{login} joined')
-        
+        for _ws in app['wslist']:
+            await _ws.send_str(f'{login} joined')
         app['wslist'].append(ws)
 
         async for msg in ws:
@@ -40,7 +39,11 @@ class WebSocket(web.View):
                 else:
                     await self.broadcast(login,msg.data)
             elif msg.type == aiohttp.WSMsgType.ERROR:
-                print("ws connection closed woth exception %s" % ws.exception())
+                print("ws connection closed with exception %s" % ws.exception())
+
+        app['wslist'].remove(ws)
+        for _ws in app['wslist']:
+            await _ws.send_str(f"{login} disconnected")
 
         return ws
 
