@@ -3,7 +3,7 @@ import aiohttp_jinja2
 
 from aiohttp import web
 
-from models import User
+from models import User, Message
 from tools import redirect, set_redis
 
 class Chat(web.View):
@@ -37,6 +37,8 @@ class WebSocket(web.View):
                 if msg.data == 'close':
                     await ws.close()
                 else:
+                    message_model = Message(app,author_id=user_id,text=msg.data)
+                    await message_model.save_message() 
                     await self.broadcast(login,msg.data)
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 print("ws connection closed with exception %s" % ws.exception())
