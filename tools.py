@@ -33,3 +33,16 @@ async def init_pg(app):
 async def close_pg(app):
     app.db.close()
     await app.db.wait_closed()
+
+async def close_ws(app):
+    for ws in app['wslist']:
+        ws.close(code=101, message='Server shutdown')
+
+async def shut_down(server, app, handler):
+    server.close()
+    await server.wait_closed()
+    await close_pg(app)
+    await close_redis(app)
+    await app.shutdown()
+    await handler.shutdown()
+    await app.cleanup()

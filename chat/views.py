@@ -26,7 +26,7 @@ class WebSocket(web.View):
         user_id = int(await redis.get('user'))
         user  = User(app,id=user_id)
         login = await user.get_login()
-        print(login)
+        print(f"{login} connect")
 
         for _ws in app['wslist']:
             await _ws.send_str(f'{login} joined')

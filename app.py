@@ -10,12 +10,9 @@ from aiohttp_session.redis_storage import RedisStorage
 
 from settings import setupConfig, setupJinja, setupStatic
 from routes import setupRoutes
-from tools import init_pg, close_pg, close_redis
+from tools import init_pg, shut_down, close_ws
 
-
-loop = asyncio.get_event_loop()
-
-async def init():
+async def init(loop):
     #App init
     app = web.Application()
 
@@ -44,13 +41,24 @@ async def init():
     app['redis'] = await aioredis.create_redis(REDIS_CONFIG)
 
     #ShutDown setups
-    app.on_shutdown.append(close_pg)
-    app.on_shutdown.append(close_redis)
+    app.on_shutdown.append(close_ws)
 
     return app
 
 if __name__ == "__main__":
-    app = loop.run_until_complete(init())
-    web.run_app(app, 
-                host=app['config']['host'],
-                port=app['config']['port'])
+    loop = asyncio.get_event_loop()
+    app  = loop.run_until_complete(init(loop))
+    handler = app.make_handler()
+
+    server_generator = loop.create_server(handler, app['config']['HOST'], app['config']['PORT'])
+    server = loop.run_until_complete(server_generator)
+
+    try:
+        
+        print(f"Start serving in {app['config']['HOST']}:{app['config']['PORT']}")
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        loop.run_until_complete(shut_down(server,app, handler))
+        loop.close()
