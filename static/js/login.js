@@ -20,7 +20,7 @@ function login(){
             }
         }).then(function(data){
             console.log(data)
-            window.location.href = '/'
+            window.location.href = '/chat'
         }).catch(error => console.log('Reqest failuer: ', error)
     )}
     else{

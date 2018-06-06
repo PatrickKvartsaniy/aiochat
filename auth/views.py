@@ -6,11 +6,13 @@ from tools import redirect, set_redis
 from models import User
 
 class Login(web.View):
-    @aiohttp_jinja2.template('login.html')
+    @aiohttp_jinja2.template('login.html')  
     async def get(self):
         redis = self.request.app['redis']
-        print(await redis.get('user'))
-        if await redis.get('user'):
+        # print(await redis.get('user'))
+        logged_in = await redis.get('user')
+        if logged_in:
+            print(logged_in)
             await redirect(self.request, 'chat')
         return {'content':'Please login'}
 
@@ -20,7 +22,7 @@ class Login(web.View):
         user = User(app, nickname=data['nickname'], password=data['password'])
         result = await user.check_user()
         if result:
-            await set_redis(app['redis'], result, self.request)
+            await set_redis(app['redis'], self.request, user=result)
             return web.Response(content_type='application/json', text=str(result))
 
 class SignIn(web.View):
@@ -48,5 +50,6 @@ class Logout(web.View):
         redis = self.request.app['redis']
         if await redis.get('user'):
             await redis.delete('user')
+            await redis.delete('channel')
             await redirect(self.request, 'login')
         return web.Response(content_type="application/json", text="Logged out")

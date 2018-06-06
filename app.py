@@ -21,7 +21,7 @@ async def init(loop):
 
     #Add routes
     setupRoutes(app)
-    app['wslist'] = []
+    app['wslist'] = {}
 
     #Add static config
     setupStatic(app)

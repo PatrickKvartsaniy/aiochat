@@ -57,7 +57,7 @@ class Message():
 
     async def save_message(self):
         async with self.app.db.acquire() as conn:
-            result = await conn.execute(messages.insert().values(date=self.date,
-                                                                 author_id = self.author_id,
-                                                                 receiver_id = self.receiver_id,
-                                                                 text = self.text))
+            await conn.execute(messages.insert().values(date=self.date,
+                                                        author_id = self.author_id,
+                                                        receiver_id = self.receiver_id,
+                                                        text = self.text))

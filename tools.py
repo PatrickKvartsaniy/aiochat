@@ -6,13 +6,17 @@ import aiopg.sa
 
 async def redirect(request, router_name):
     url = request.app.router[router_name].url_for()
+    print(url)
     return web.HTTPFound(url)
 
 
-async def set_redis(redis,user,request):
-    await redis.set('user',str(user))
-    await redis.set('last_visit',time())
-    await redirect(request, 'chat')
+async def set_redis(redis,request,user=None,channel=None):
+    if user:
+        await redis.set('user',str(user))
+        await redis.set('last_visit',time())
+        await redirect(request, 'chat')
+    elif channel:
+        await redis.set('channel', channel)
 
 async def close_redis(app):
         app['redis'].close()
