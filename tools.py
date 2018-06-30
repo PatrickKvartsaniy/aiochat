@@ -7,7 +7,7 @@ import aiopg.sa
 async def redirect(request, router_name):
     url = request.app.router[router_name].url_for()
     print(url)
-    return web.HTTPFound(url)
+    raise web.HTTPFound(url)
 
 
 async def set_redis(redis,request,user=None,channel=None):

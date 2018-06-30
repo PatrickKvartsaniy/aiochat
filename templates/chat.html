@@ -2,32 +2,35 @@
 
 {% block content %}
 
-<div class="container">
-    <div class="row " style="padding-top:40px;">
-      <h3 class="text-center">Realtime Chat</h3>
-      <br/><br/>
-
-      <div class="col-md-12">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            <strong><span class="glyphicon glyphicon-list"></span>History</strong>
-          </div>
-          <div class="panel-body fixed-panel">
-            <ul id="media-list">
-                <!-- Messages will be here -->
-            </ul>
-          </div>
-          <div class="panel-footer">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Enter Message" id="messageText" autofocus/>
-              <span class="input-group-btn">
-                <button class="btn btn-info" type="button" id="send" onclick="sendMsg()">SEND <span class="glyphicon glyphicon-send"></span></button>
-              </span>
+    <div id="root" class="container">
+        <header class="header">
+            <div id="left-header" class="form-inline">
+                <input id="friendName" class="form-control" type="search" placeholder="Search...">
+                <button type="button" id="addFriend"class="btn btn-primary">Add friend</button>
             </div>
-          </div>
-        </div>
-      </div>
+            <div id="mid-header">
+                <h3>Aiochat</h3>
+            </div>
+            <div id="right-header">
+            <h4>{{name}}<a href="/logout" id='logoutbtn'><button class="btn btn-secondary mb-2">Logout</button></a></h4>
+            </div>
+        </header>
+        <main class="main">
+            <div class="msglist" id="media-list"></div>
+            <div class="msgfield">
+                <input type="text" id="textField" placeholder="Write a message...">
+                <button id="btn" class="btn btn-success">Send</button>
+            </div>
+        </main>
+        <aside class="left">
+            <ul class="list-group" id="rooms">
+                {% for friend in friends %}
+                    <li class="list-group-item">{{friend}}</li>
+                {% endfor %}
+            </ul>
+        </aside>
+        <!-- <aside class="right"></aside> -->
+        <!-- <footer class="footer"></footer> -->
     </div>
-  </div>
-  <script src="{{ app.router.static.url_for(filename = 'js/main.js') }}"></script>
+    <script src="{{ app.router.static.url_for(filename = 'js/main.js') }}"></script>
 {% endblock %}

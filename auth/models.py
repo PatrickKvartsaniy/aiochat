@@ -10,13 +10,6 @@ users = sa.Table('users',metadata,
                  sa.Column('email',    sa.VARCHAR(100)),
                  sa.Column('password', sa.VARCHAR(100)))
 
-messages = sa.Table('messages', metadata,
-                sa.Column('id',         sa.Integer, primary_key = True),
-                sa.Column('date',       sa.VARCHAR(100)),
-                sa.Column('author_id',  sa.Integer),
-                sa.Column('receiver_id',sa.Integer),
-                sa.Column('text',       sa.VARCHAR(100)))
-
 class User():
     def __init__(self,app,id="",nickname="",email="",password=""):
         self.id = id
@@ -46,18 +39,3 @@ class User():
         async with self.app.db.acquire() as conn:
             async for row in conn.execute(users.select().where(users.c.id == self.id)):
                 return row.nickname
-
-class Message():
-    def __init__(self,app,text,author_id,receiver_id=None):
-        self.app = app
-        self.date = str(datetime.datetime.now())
-        self.text = text
-        self.author_id = author_id
-        self.receiver_id = receiver_id
-
-    async def save_message(self):
-        async with self.app.db.acquire() as conn:
-            await conn.execute(messages.insert().values(date=self.date,
-                                                        author_id = self.author_id,
-                                                        receiver_id = self.receiver_id,
-                                                        text = self.text))

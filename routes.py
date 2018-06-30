@@ -1,16 +1,17 @@
-from chat.views    import Chat, WebSocket
+from chat.views    import Chat, WebSocket, AddFriends
 from auth.views    import Login, SignIn, Logout
 from landing.views import Landing
 
 routes = [
-    ('GET', '/',              Landing,  'landing'),
-    ('GET', '/chat',          Chat,     'chat'),
-    ('GET', '/chat/{channel}',Chat,     'chatroom'),
-    ('GET', '/ws',            WebSocket,'websocket'),
-    ('GET', '/ws/{channel}',  WebSocket,'channel'),
-    ('*',   '/login',         Login,    'login'),
-    ('*',   '/signin',        SignIn,   'signin'),
-    ('GET', '/logout',        Logout,   'logout'),
+    ('GET', '/',              Landing,   'landing'),
+    ('GET', '/chat',          Chat,      'chat'),
+    ('GET', '/chat/{channel}',Chat,      'chatroom'),
+    ('GET', '/ws',            WebSocket, 'websocket'),
+    ('GET', '/ws/{channel}',  WebSocket, 'channel'),
+    ('POST','/friends',       AddFriends,'friends'),
+    ('*',   '/login',         Login,     'login'),
+    ('*',   '/signin',        SignIn,    'signin'),
+    ('*',   '/logout',        Logout,    'logout')
 ]
 
 def setupRoutes(app):

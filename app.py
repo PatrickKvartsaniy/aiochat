@@ -31,7 +31,7 @@ async def init(loop):
 
     #PostgreSQL init
     app.db = await init_pg(app)
-    
+
     #Setup redis
     REDIS_CONFIG = tuple(app['config']['redis'].values())
 
@@ -50,11 +50,11 @@ if __name__ == "__main__":
     app  = loop.run_until_complete(init(loop))
     handler = app.make_handler()
 
-    server_generator = loop.create_server(handler, app['config']['HOST'], app['config']['PORT'])
+    server_generator = loop.create_server(handler, app['config']['HOST'],
+                                                   app['config']['PORT'])
     server = loop.run_until_complete(server_generator)
 
     try:
-        
         print(f"Start serving in {app['config']['HOST']}:{app['config']['PORT']}")
         loop.run_forever()
     except KeyboardInterrupt:
