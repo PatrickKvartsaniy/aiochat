@@ -1,6 +1,7 @@
+import datetime
+
 import sqlalchemy as sa
 import aiopg.sa
-import datetime
 
 from sqlalchemy.sql import and_, or_
 
@@ -48,9 +49,7 @@ class Friends():
                 or_(friends.c.user_id == self.friend_id, friends.c.friend_id == self.friend_id)))):
                 return row
     async def add_friends(self):
-        relation = await self.check_friendship()
-        print(relation)
-        if relation:
+        if await self.check_friendship():
             print("You are already friends:)")
         else:
             async with self.app.db.acquire() as conn:
@@ -59,8 +58,12 @@ class Friends():
                 print(f"{user_id} and {friend_id} are friends now!")
 
     async def find_friends(self):
+        friends_id = set()
         async with self.app.db.acquire() as conn:
-            async for row in conn.execute(friends.select().where(or_(
-            and_(friends.c.user_id == self.user_id,friends.c.friend_id != self.user_id),
-            and_(friends.c.user_id != self.user_id,friends.c.friend_id == self.user_id)))):
-                return row.user_id, row.friend_id
+            async for row in conn.execute(friends.select().where(or_(friends.c.user_id == self.user_id,
+                                          friends.c.friend_id == self.user_id))):
+                if row.user_id != self.user_id:
+                    friends_id.add(row.user_id)
+                elif row.friend_id != self.user_id:
+                    friends_id.add(row.friend_id)
+            return friends_id

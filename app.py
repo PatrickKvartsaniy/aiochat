@@ -1,8 +1,5 @@
-import base64
 import asyncio
 import aioredis
-
-from cryptography import fernet
 
 from aiohttp import web
 from aiohttp_session import setup
@@ -10,7 +7,7 @@ from aiohttp_session.redis_storage import RedisStorage
 
 from settings import setupConfig, setupJinja, setupStatic
 from routes import setupRoutes
-from tools import init_pg, shut_down, close_ws
+from tools  import init_pg, shut_down
 
 async def init(loop):
     #App init
@@ -34,14 +31,9 @@ async def init(loop):
 
     #Setup redis
     REDIS_CONFIG = tuple(app['config']['redis'].values())
-
-    redis_pool = await aioredis.create_pool(REDIS_CONFIG, loop=loop)
+    redis_pool   = await aioredis.create_pool(REDIS_CONFIG, loop=loop)
     setup(app, RedisStorage(redis_pool))
-
     app['redis'] = await aioredis.create_redis(REDIS_CONFIG)
-
-    #ShutDown setups
-    app.on_shutdown.append(close_ws)
 
     return app
 

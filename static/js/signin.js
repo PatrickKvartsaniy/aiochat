@@ -17,7 +17,7 @@ function signIn(){
                     "password": password
                 }
             )
-        }).then(data  => window.location.replace('/chat')
+        }).then(data  => console.log(`${data}`)
         ).catch(error => console.log('Reqest failuer: ', error)
     )}
     else{

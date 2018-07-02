@@ -23,9 +23,9 @@
             </div>
         </main>
         <aside class="left">
-            <ul class="list-group" id="rooms">
+            <ul id="friends-list" class="list-group">
                 {% for friend in friends %}
-                    <li class="list-group-item">{{friend}}</li>
+                    <li class="list-group-item"><a href="/chat/{{friend.id}}">{{friend.name}}</a></li>
                 {% endfor %}
             </ul>
         </aside>

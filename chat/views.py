@@ -18,12 +18,10 @@ class Chat(web.View):
             await redirect(self.request, 'login')
         channel = self.request.match_info.get('channel') or 0
         await set_redis(redis, self.request,channel= channel)
-        print(f"Connected to channel {channel}")
-        login =   await User(app,id=int(usr)).get_login()
-        friends =  await Friends(app,int(usr)).find_friends()
-        print(friends)
-        friends_names = [await User(app, id=id).get_login() for id in friends]
-        return {'name':login, 'friends':friends_names}
+        login = await User(app,id=int(usr)).get_login()
+        friends_id = await Friends(app,int(usr)).find_friends()
+        friends = [{"id":id,"name":await User(app, id=id).get_login()} for id in friends_id]
+        return {'name':login, 'friends':friends}
 
 class WebSocket(web.View):
 
